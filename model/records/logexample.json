@@ -1,0 +1,41 @@
+[
+  {
+    "playerName": "Trevor",
+    "action": {
+      "name": "income"
+    }
+  },
+  {
+    "playerName": "Michael",
+    "action": {
+      "name": "tax",
+      "challenge": {
+        "challenger": "Trevor",
+        "success": true
+      }
+    }
+  },
+  {
+    "playerName": "Zueterneuman",
+    "action": {
+      "name": "steal",
+      "target": "Trevor",
+      "challenge": null,
+      "block": null
+    }
+  },
+  {
+    "playerName": "Trevor",
+    "action": {
+      "name": "assassinate",
+      "target": "Michael",
+      "challenge": null,
+      "block": {
+        "blockChallenge": {
+          "success": true
+        },
+        "success": false
+      }
+    }
+  }
+]
