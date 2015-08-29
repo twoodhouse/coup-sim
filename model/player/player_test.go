@@ -2,10 +2,12 @@ package player
 import (
   "testing"
   "github.com/twoodhouse/coup-sim/model/deck"
+  "github.com/twoodhouse/coup-sim/model/strategies/noLieStrategy"
 )
 
 func TestPlayerCreation(t *testing.T) {
-  var player = New("p1", deck.NewRandomCenter(), 2)
+  strategy := noLieStrategy.New()
+  player := New("p1", &strategy, deck.NewRandomCenter(), 2)
   if !(player.Name() == "p1") {
     t.Errorf("Table name wrong: expected %q, got %q", "p1", player.Name())
   }

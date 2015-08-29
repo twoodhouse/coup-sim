@@ -1,16 +1,18 @@
 package player
 import "github.com/twoodhouse/coup-sim/model/deck"
-// import "github.com/twoodhouse/coup-sim/model/strategy"
+import "github.com/twoodhouse/coup-sim/model/strategy"
 
 type Entity struct {
   name string
+  strategy strategy.Interface
   deck deck.Entity
   coins int
 }
 
-func New(name string, deck deck.Entity, coins int) Entity {
+func New(name string, strategy strategy.Interface, deck deck.Entity, coins int) Entity {
   var entity = Entity {
     name,
+    strategy,
     deck,
     coins,
   }
