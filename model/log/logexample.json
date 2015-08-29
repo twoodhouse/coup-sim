@@ -19,9 +19,7 @@
     "playerName": "Zueterneuman",
     "action": {
       "name": "steal",
-      "target": "Trevor",
-      "challenge": null,
-      "block": null
+      "target": "Trevor"
     }
   },
   {
@@ -29,12 +27,8 @@
     "action": {
       "name": "assassinate",
       "target": "Michael",
-      "challenge": null,
       "block": {
-        "blockChallenge": {
-          "success": true
-        },
-        "success": false
+        "challengeSuccess": true
       }
     }
   }
