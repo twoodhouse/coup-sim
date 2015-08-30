@@ -27,6 +27,10 @@ func (entity *Entity) Name() string {
   return entity.name
 }
 
+func (entity *Entity) Coins() int {
+  return entity.coins
+}
+
 func (entity *Entity) GiveCards(cards []int) {
   entity.deck.GiveCards(cards)
 }

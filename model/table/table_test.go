@@ -1,5 +1,6 @@
 package table
 import (
+	"fmt"
 	"testing"
 	"github.com/twoodhouse/coup-sim/model/strategies/noLieStrategy"
 	"github.com/twoodhouse/coup-sim/model/strategy"
@@ -24,4 +25,6 @@ func TestTableCreation(t *testing.T) {
 	if !(table.centerDeck.Size() == 9) {
 		t.Errorf("Center deck size wrong: expected %d, got %d", 9, table.centerDeck.Size())
 	}
+
+	fmt.Println(table.PlayerCoins()["noLieStr"])
 }

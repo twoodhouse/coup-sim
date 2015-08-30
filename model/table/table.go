@@ -33,10 +33,22 @@ func New(strategies []strategy.Interface) Entity {
   return entity
 }
 
-func (entity *Entity) FaceupDecks() []deck.Entity {
-  return entity.faceupDecks
+func (entity *Entity) FaceupDecks() map[string][]int {
+  playerDecks := make(map[string][]int)
+  for i := 0; i < len(entity.faceupDecks); i++ {
+    playerDecks[entity.players[i].Name()] = entity.faceupDecks[i].Cards()
+  }
+  return playerDecks
 }
 
-func (entity *Entity) AddCoins(number int) {
-  entity.coins = entity.coins + number;
+func (entity *Entity) PlayerCoins() map[string]int {
+  playerCoins := make(map[string]int)
+  for i := 0; i < len(entity.players); i++ {
+    playerCoins[entity.players[i].Name()] = entity.players[i].Coins()
+  }
+  return playerCoins
 }
+//
+// func (entity *Entity) addCoins(number int) {
+//   entity.coins = entity.coins + number;
+// }

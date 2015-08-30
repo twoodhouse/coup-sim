@@ -62,3 +62,7 @@ func (entity *Entity) shuffleCards() {
 func (entity *Entity) Size() int {
   return len(entity.cards)
 }
+
+func (entity *Entity) Cards() []int {
+  return entity.cards
+}

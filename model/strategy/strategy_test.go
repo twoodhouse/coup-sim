@@ -2,7 +2,7 @@ package strategy
 import (
 	"testing"
 	"github.com/twoodhouse/coup-sim/model/strategies/noLieStrategy"
-	"github.com/twoodhouse/coup-sim/model/log"
+	// "github.com/twoodhouse/coup-sim/model/log"
 )
 
 func TestStrategyInterface(t *testing.T) {
@@ -11,6 +11,6 @@ func TestStrategyInterface(t *testing.T) {
 }
 
 func testInterface(strategy Interface) {
-	log := log.New()
-	strategy.GetAction(log)
+	// log := log.New()
+	// strategy.GetAction(log)
 }

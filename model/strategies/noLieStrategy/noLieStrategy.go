@@ -17,18 +17,18 @@ func (entity *Entity) GetName() string {
   return entity.name
 }
 
-func (entity *Entity) GetAction(log log.Entity) string {
+func (entity *Entity) GetAction(log log.Entity, coinInfo map[string]int, faceupInfo map[string][]int) string {
   return "income"
 }
 
-func (entity *Entity) GetChallenge(log log.Entity) bool {
+func (entity *Entity) GetChallenge(log log.Entity, coinInfo map[string]int, faceupInfo map[string][]int) bool {
   return false
 }
 
-func (entity *Entity) GetBlock(log log.Entity) bool {
+func (entity *Entity) GetBlock(log log.Entity, coinInfo map[string]int, faceupInfo map[string][]int) bool {
   return false
 }
 
-func (entity *Entity) GetAmbassadorReturns(log log.Entity, c1 string, c2 string) (string, string) {
+func (entity *Entity) GetAmbassadorReturns(log log.Entity, coinInfo map[string]int, faceupInfo map[string][]int, c1 string, c2 string) (string, string) {
   return c1, c2
 }
