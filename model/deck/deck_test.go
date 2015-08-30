@@ -26,8 +26,9 @@ func TestTakeCards(t *testing.T) {
     t.Errorf("Number of cards wrong: expected %d, got %d", 15, len(deck.cards))
   }
   cardsTaken := deck.TakeCards(2)
-  if !(len(deck.cards) == 13){
-    t.Errorf("Number of cards wrong: expected %d, got %d", 13, len(deck.cards))
+  deck.TakeCards(1)
+  if !(len(deck.cards) == 12){
+    t.Errorf("Number of cards wrong: expected %d, got %d", 12, len(deck.cards))
   }
   if !(len(cardsTaken) == 2){
     t.Errorf("Number of cards taken wrong: expected %d, got %d", 3, len(cardsTaken))

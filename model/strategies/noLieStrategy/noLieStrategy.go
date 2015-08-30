@@ -1,5 +1,5 @@
 package noLieStrategy
-// import "fmt"
+
 import "github.com/twoodhouse/coup-sim/model/log"
 
 type Entity struct {
@@ -11,6 +11,10 @@ func New() Entity {
     "noLieStr",
   }
   return entity
+}
+
+func (entity *Entity) GetName() string {
+  return entity.name
 }
 
 func (entity *Entity) GetAction(log log.Entity) string {

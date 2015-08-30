@@ -1,55 +1,27 @@
 package table
 import (
-	// "fmt"
 	"testing"
-	"github.com/twoodhouse/coup-sim/model/player"
-	"github.com/twoodhouse/coup-sim/model/deck"
+	"github.com/twoodhouse/coup-sim/model/strategies/noLieStrategy"
+	"github.com/twoodhouse/coup-sim/model/strategy"
 )
 
-// func TestTableCreation(t *testing.T) {
-// 	var playerDeck = deck.New("pdeck", false)
-// 	var table = New("table1", []player.Entity{player.New("p1", playerDeck, 2), player.New("p2", playerDeck, 2)}, deck.New("d1", true), 5)
-// 	if !(table.Name() == "table1") {
-// 		t.Errorf("Table name wrong: expected %q, got %q", "table1", table.Name())
-// 	}
-// 	if !(table.Players()[0].Name() == "p1") {
-// 		t.Errorf("Player name wrong: expected %q, got %q", "p1", table.Players()[0].Name())
-// 	}
-// 	if !(table.Players()[1].Name() == "p2") {
-// 		t.Errorf("Player name wrong: expected %q, got %q", "p2", table.Players()[1].Name())
-// 	}
-// 	if !(table.Decks()[0].Name() == "d1") {
-// 		t.Errorf("Deck name wrong: expected %q, got %q", "d1", table.Decks()[0].Name())
-// 	}
-// 	if !(table.Coins() == 5) {
-// 		t.Errorf("Number of coins wrong: expected %q, got %q", 5, table.Coins())
-// 	}
-// }
+func TestTableCreation(t *testing.T) {
+  s1 := noLieStrategy.New()
+	s2 := noLieStrategy.New()
+	s3 := noLieStrategy.New()
+	strategies := make([]strategy.Interface, 3)
+	strategies[0] = &s1
+	strategies[1] = &s2
+	strategies[2] = &s3
+	table := New(strategies)
 
-func TestAddCoins(t *testing.T) {
-	var table = New("table1", []player.Entity{player.New("p1", 2), player.New("p2", 2)}, deck.New("d1", true), 5)
-	table.AddCoins(5)
-	if !(table.Coins() == 10) {
-		t.Errorf("Number of coins wrong: expected %d, got %d", 10, table.Coins())
+	if !(table.players[0].DeckSize() == 2) {
+		t.Errorf("Player deck size wrong: expected %d, got %d", 2, table.players[0].DeckSize())
 	}
-	table.AddCoins(-15)
-	if !(table.Coins() == -5) {
-		t.Errorf("Number of coins wrong: expected %d, got %d", -5, table.Coins())
+	if !(table.players[2].DeckSize() == 2) {
+		t.Errorf("Player deck size wrong: expected %d, got %d", 2, table.players[2].DeckSize())
+	}
+	if !(table.centerDeck.Size() == 9) {
+		t.Errorf("Center deck size wrong: expected %d, got %d", 9, table.centerDeck.Size())
 	}
 }
-// fmt.Printf(table.name);
-// []player.Entity{{"p1"}, {"p2"}}
-
-// cases := []struct {
-// 	want string
-// }{
-// 	{"Hello, world", "dlrow ,olleH},
-// 	{"Hello, 世界", "界世 ,olleH"},
-// 	{"", ""},
-// }
-// for _, c := range cases {
-// 	got := Reverse(c.in)
-// 	if got != c.want {
-// 		t.Errorf("Reverse(%q) == %q, want %q", c.in, got, c.want)
-// 	}
-// }

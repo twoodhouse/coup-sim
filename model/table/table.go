@@ -1,6 +1,9 @@
 package table
-import "github.com/twoodhouse/coup-sim/model/player"
-import "github.com/twoodhouse/coup-sim/model/deck"
+import (
+  "github.com/twoodhouse/coup-sim/model/player"
+  "github.com/twoodhouse/coup-sim/model/strategy"
+  "github.com/twoodhouse/coup-sim/model/deck"
+)
 
 type Entity struct {
   players []player.Entity
@@ -9,31 +12,31 @@ type Entity struct {
   coins int
 }
 
-func New(players []player.Entity) Entity {
+func New(strategies []strategy.Interface) Entity {
   centerDeck := deck.NewRandomCenter()
-  faceupDecks := make([]deck.Entity, len(players))
+  faceupDecks := make([]deck.Entity, len(strategies))
+
+  players := make([]player.Entity, 6)
+  for i := 0; i < len(strategies); i++ {
+    players[i] = player.New(strategies[i].GetName(), strategies[i], deck.New(centerDeck.TakeCards(2)), 2)
+  }
 
   for i := 0; i < len(faceupDecks); i++ {
-    faceupDecks[i] = deck.New(make([]int, 2));
+    faceupDecks[i] = deck.New(make([]int, 2))
   }
   var entity = Entity {
     players,
     centerDeck,
     faceupDecks,
-    20,
+    40,
   }
   return entity
 }
 
-func (entity *Entity) Players() []player.Entity {
-  return entity.players
-}
-
-func (entity *Entity) Coins() int {
-  return entity.coins
+func (entity *Entity) FaceupDecks() []deck.Entity {
+  return entity.faceupDecks
 }
 
 func (entity *Entity) AddCoins(number int) {
   entity.coins = entity.coins + number;
 }
-// []player.Properties{{"p1"}}

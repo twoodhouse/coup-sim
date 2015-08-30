@@ -7,7 +7,9 @@ import (
 
 func TestPlayerCreation(t *testing.T) {
   strategy := noLieStrategy.New()
-  player := New("p1", &strategy, deck.NewRandomCenter(), 2)
+  centerDeck := deck.NewRandomCenter()
+  playerDeck := deck.New(centerDeck.TakeCards(2))
+  player := New("p1", &strategy, playerDeck, 2)
   if !(player.Name() == "p1") {
     t.Errorf("Table name wrong: expected %q, got %q", "p1", player.Name())
   }

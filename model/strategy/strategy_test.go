@@ -1,6 +1,5 @@
 package strategy
 import (
-	// "fmt"
 	"testing"
 	"github.com/twoodhouse/coup-sim/model/strategies/noLieStrategy"
 	"github.com/twoodhouse/coup-sim/model/log"

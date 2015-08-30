@@ -24,7 +24,7 @@ func NewRandomCenter() Entity {
 }
 
 func (entity *Entity) TakeCards(number int) []int {
-  cardsRemaining := make([]int, 15 - number)
+  cardsRemaining := make([]int, entity.Size() - number)
   for i := 0; i < len(entity.cards) - number; i++ {
     cardsRemaining[i] = entity.cards[i]
   }

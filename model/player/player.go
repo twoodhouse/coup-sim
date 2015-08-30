@@ -19,10 +19,18 @@ func New(name string, strategy strategy.Interface, deck deck.Entity, coins int) 
   return entity
 }
 
-func (entity *Entity) addCoins(number int) {
+func (entity *Entity) AddCoins(number int) {
   entity.coins = entity.coins + number;
 }
 
 func (entity *Entity) Name() string {
   return entity.name
+}
+
+func (entity *Entity) GiveCards(cards []int) {
+  entity.deck.GiveCards(cards)
+}
+
+func (entity *Entity) DeckSize() int {
+  return entity.deck.Size()
 }
