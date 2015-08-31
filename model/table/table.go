@@ -16,7 +16,7 @@ func New(strategies []strategy.Interface) Entity {
   centerDeck := deck.NewRandomCenter()
   faceupDecks := make([]deck.Entity, len(strategies))
 
-  players := make([]player.Entity, 6)
+  players := make([]player.Entity, len(strategies))
   for i := 0; i < len(strategies); i++ {
     players[i] = player.New(strategies[i].GetName(), strategies[i], deck.New(centerDeck.TakeCards(2)), 2)
   }
@@ -31,6 +31,10 @@ func New(strategies []strategy.Interface) Entity {
     40,
   }
   return entity
+}
+
+func (entity *Entity) Players() []player.Entity {
+  return entity.players
 }
 
 func (entity *Entity) FaceupDecks() map[string][]int {
@@ -48,7 +52,7 @@ func (entity *Entity) PlayerCoins() map[string]int {
   }
   return playerCoins
 }
-//
-// func (entity *Entity) addCoins(number int) {
-//   entity.coins = entity.coins + number;
-// }
+
+func (entity *Entity) AddCoins(number int) {
+  entity.coins = entity.coins + number;
+}
