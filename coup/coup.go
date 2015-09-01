@@ -14,6 +14,8 @@ func main() {
 	fmt.Printf("Ah ... %d. Sounds good. What strategies will they be using?\n", numPlayers)
 
 	strategies := make([]strategy.Interface, numPlayers)
+	playerNames := make([]string, numPlayers)
+
 	var strategyName string
 	for i := 0; i < numPlayers; i++ {
 		fmt.Printf(">")
@@ -25,7 +27,16 @@ func main() {
 		newStrategy := createStrategyByName(strategyName)
 		strategies[i] = newStrategy
 		if newStrategy != nil {
-			fmt.Printf("Found %q\n", newStrategy.GetName())
+			fmt.Printf("Found %q, what is its name?  ", newStrategy.GetName())
+			//TODO fix this so that it will error check for multiple players with same name
+			ni, err := fmt.Scanf("%s", &playerNames[i])
+			if err != nil {
+					fmt.Println(ni, err)
+					return
+			}
+			if numPlayers - i != 1 {
+				fmt.Println("What is the strategy for the next player?")
+			}
 		} else {
 			fmt.Printf("Strategy %q\n does not exist. Try again.\n", strategyName)
 			i = i - 1
@@ -34,8 +45,8 @@ func main() {
 	var numGames int
 	fmt.Printf("How many times do you want to play?\n")
 	fmt.Scanf("%d", &numGames)
-	
-	controller.StartGame(strategies, numGames)
+
+	controller.StartGame(strategies, playerNames, numGames)
 }
 
 func createStrategyByName(name string) strategy.Interface {

@@ -12,13 +12,13 @@ type Entity struct {
   coins int
 }
 
-func New(strategies []strategy.Interface) Entity {
+func New(strategies []strategy.Interface, playerNames []string) Entity {
   centerDeck := deck.NewRandomCenter()
   faceupDecks := make([]deck.Entity, len(strategies))
 
   players := make([]player.Entity, len(strategies))
   for i := 0; i < len(strategies); i++ {
-    players[i] = player.New(strategies[i].GetName(), strategies[i], deck.New(centerDeck.TakeCards(2)), 2)
+    players[i] = player.New(playerNames[i], strategies[i], deck.New(centerDeck.TakeCards(2)), 2)
   }
 
   for i := 0; i < len(faceupDecks); i++ {

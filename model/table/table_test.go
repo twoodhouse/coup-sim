@@ -14,7 +14,11 @@ func TestTableCreation(t *testing.T) {
 	strategies[0] = &s1
 	strategies[1] = &s2
 	strategies[2] = &s3
-	table := New(strategies)
+	names := make([]string, 3)
+	names[0] = "a"
+	names[1] = "b"
+	names[2] = "c"
+	table := New(strategies, names)
 
 	if !(table.players[0].DeckSize() == 2) {
 		t.Errorf("Player deck size wrong: expected %d, got %d", 2, table.players[0].DeckSize())

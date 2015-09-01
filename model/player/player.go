@@ -27,6 +27,10 @@ func (entity *Entity) Name() string {
   return entity.name
 }
 
+func (entity *Entity) Deck() deck.Entity {
+  return entity.deck
+}
+
 func (entity *Entity) Strategy() strategy.Interface {
   return entity.strategy
 }
