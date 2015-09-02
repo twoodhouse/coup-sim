@@ -7,7 +7,7 @@ import (
 
 func TestStrategyInterface(t *testing.T) {
   noLieStrategy := noLieStrategy.New()
-	testInterface(&noLieStrategy)
+	testInterface(noLieStrategy)
 }
 
 func testInterface(strategy Interface) {

@@ -53,10 +53,10 @@ func createStrategyByName(name string) strategy.Interface {
 	switch name {
 	case "noLie":
 		noLieStrategy := noLieStrategy.New()
-		return &noLieStrategy
+		return noLieStrategy
 	case "other":
 		noLieStrategy := noLieStrategy.New()
-		return &noLieStrategy
+		return noLieStrategy
 	}
 	return nil
 }

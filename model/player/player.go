@@ -5,18 +5,18 @@ import "github.com/twoodhouse/coup-sim/model/strategy"
 type Entity struct {
   name string
   strategy strategy.Interface
-  deck deck.Entity
+  deck *deck.Entity
   coins int
 }
 
-func New(name string, strategy strategy.Interface, deck deck.Entity, coins int) Entity {
+func New(name string, strategy strategy.Interface, deck *deck.Entity, coins int) *Entity {
   var entity = Entity {
     name,
     strategy,
     deck,
     coins,
   }
-  return entity
+  return &entity
 }
 
 func (entity *Entity) AddCoins(number int) {
@@ -27,7 +27,7 @@ func (entity *Entity) Name() string {
   return entity.name
 }
 
-func (entity *Entity) Deck() deck.Entity {
+func (entity *Entity) Deck() *deck.Entity {
   return entity.deck
 }
 

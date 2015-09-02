@@ -7,20 +7,20 @@ type Entity struct {
   cards []int
 }
 
-func New(cards []int) Entity {
+func New(cards []int) *Entity {
   var entity = Entity {
     cards,
   }
-  return entity
+  return &entity
 }
 
-func NewRandomCenter() Entity {
-  var cards = []int{0,0,0,1,1,1,2,2,2,3,3,3,4,4,4}
+func NewRandomCenter() *Entity {
+  var cards = []int{5,5,5,1,1,1,2,2,2,3,3,3,4,4,4}
   var entity = Entity {
     cards,
   }
   entity.shuffleCards()
-  return entity
+  return &entity
 }
 
 func (entity *Entity) TakeCards(number int) []int {
@@ -34,6 +34,16 @@ func (entity *Entity) TakeCards(number int) []int {
   }
   entity.cards = cardsRemaining
   return cardsTaken
+}
+
+func (entity *Entity) TakeTopCard() int {
+  cardsRemaining := make([]int, entity.Size() - 1)
+  for i := 0; i < len(entity.cards) - 1; i++ {
+    cardsRemaining[i] = entity.cards[i]
+  }
+  cardTaken := entity.cards[len(entity.cards) - 1]
+  entity.cards = cardsRemaining
+  return cardTaken
 }
 
 func (entity *Entity) GiveCards(givenCards []int) {
@@ -65,4 +75,25 @@ func (entity *Entity) Size() int {
 
 func (entity *Entity) Cards() []int {
   return entity.cards
+}
+
+func (entity *Entity) HasCardForAction(cardActionName string) bool {
+  hasCard := false
+  var cardValue int
+  switch cardActionName {
+  case "tax":
+    cardValue = 1
+  case "steal":
+    cardValue = 2
+  case "assassinate":
+    cardValue = 3
+  case "exchange":
+    cardValue = 5
+  }
+  for i := 0; i < len(entity.cards); i++ {
+    if entity.cards[i] == cardValue {
+      hasCard = true
+    }
+  }
+  return hasCard
 }

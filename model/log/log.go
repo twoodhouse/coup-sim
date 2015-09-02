@@ -12,11 +12,11 @@ We want data to be added dynamically to the structure
 For example, a function CreateTurn should create one element in the array
 */
 
-func New() Entity {
+func New() *Entity {
   var entity = Entity {
     "[{\"playerName\": null, \"action\": {\"name\": null}}]",
   }
-  return entity
+  return &entity
 }
 
 func (entity *Entity) JsonStr() string {

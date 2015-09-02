@@ -1,22 +1,23 @@
 package table
 import (
+  "fmt"
   "github.com/twoodhouse/coup-sim/model/player"
   "github.com/twoodhouse/coup-sim/model/strategy"
   "github.com/twoodhouse/coup-sim/model/deck"
 )
 
 type Entity struct {
-  players []player.Entity
-  centerDeck deck.Entity
-  faceupDecks []deck.Entity
+  players []*player.Entity
+  centerDeck *deck.Entity
+  faceupDecks []*deck.Entity
   coins int
 }
 
-func New(strategies []strategy.Interface, playerNames []string) Entity {
+func New(strategies []strategy.Interface, playerNames []string) *Entity {
   centerDeck := deck.NewRandomCenter()
-  faceupDecks := make([]deck.Entity, len(strategies))
+  faceupDecks := make([]*deck.Entity, len(strategies))
 
-  players := make([]player.Entity, len(strategies))
+  players := make([]*player.Entity, len(strategies))
   for i := 0; i < len(strategies); i++ {
     players[i] = player.New(playerNames[i], strategies[i], deck.New(centerDeck.TakeCards(2)), 2)
   }
@@ -30,10 +31,10 @@ func New(strategies []strategy.Interface, playerNames []string) Entity {
     faceupDecks,
     40,
   }
-  return entity
+  return &entity
 }
 
-func (entity *Entity) Players() []player.Entity {
+func (entity *Entity) Players() []*player.Entity {
   return entity.players
 }
 
@@ -55,4 +56,12 @@ func (entity *Entity) PlayerCoins() map[string]int {
 
 func (entity *Entity) AddCoins(number int) {
   entity.coins = entity.coins + number;
+}
+
+func (entity *Entity) PrintTable() {
+  for i := 0; i < len(entity.players); i++ {
+    card1 := entity.faceupDecks[i].Cards()[0]
+    card2 := entity.faceupDecks[i].Cards()[1]
+    fmt.Printf("%s: %d%d, %d coins\n", entity.players[i].Name(), card1, card2, entity.players[i].Coins())
+  }
 }

@@ -11,9 +11,9 @@ func TestTableCreation(t *testing.T) {
 	s2 := noLieStrategy.New()
 	s3 := noLieStrategy.New()
 	strategies := make([]strategy.Interface, 3)
-	strategies[0] = &s1
-	strategies[1] = &s2
-	strategies[2] = &s3
+	strategies[0] = s1
+	strategies[1] = s2
+	strategies[2] = s3
 	names := make([]string, 3)
 	names[0] = "a"
 	names[1] = "b"
