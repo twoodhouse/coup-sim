@@ -1,6 +1,7 @@
 package log
 
 import "encoding/json"
+import "strconv"
 // import "fmt"
 
 type Entity struct {
@@ -53,7 +54,7 @@ func (entity *Entity) CreateTarget(target string) {
   entity.jsonStr = (string(marshaledJson))
 }
 
-func (entity *Entity) CreateChallenge(challenger string, success bool) {
+func (entity *Entity) CreateChallenge(challenger string, success bool, flippedCard int) {
   log := unmarshalJsonArray(entity.jsonStr)
   logTurn := log[len(log) - 1]
   var successStr string
@@ -62,7 +63,7 @@ func (entity *Entity) CreateChallenge(challenger string, success bool) {
   } else {
     successStr = "false"
   }
-  logTurn["challenge"] = unmarshalJson("{\"challenger\": \"" + challenger + "\", \"success\": " + successStr + "}")
+  logTurn["challenge"] = unmarshalJson("{\"challenger\": \"" + challenger + "\", \"success\": " + successStr  + ", \"cardLoss\": " + strconv.Itoa(flippedCard) + "}")
   marshaledJson, _ := json.Marshal(log)
   entity.jsonStr = (string(marshaledJson))
 }
@@ -75,7 +76,7 @@ func (entity *Entity) CreateBlock() {
   entity.jsonStr = (string(marshaledJson))
 }
 
-func (entity *Entity) CreateBlockChallenge(challengeSuccess bool) {
+func (entity *Entity) CreateBlockChallenge(challengeSuccess bool, flippedCard int) {
   log := unmarshalJsonArray(entity.jsonStr)
   logTurn := log[len(log) - 1]
   block := logTurn["block"].(map[string]interface{})
@@ -86,6 +87,7 @@ func (entity *Entity) CreateBlockChallenge(challengeSuccess bool) {
     successStr = "false"
   }
   block["challengeSuccess"] = successStr
+  block["cardLoss"] = strconv.Itoa(flippedCard)
   marshaledJson, _ := json.Marshal(log)
   entity.jsonStr = (string(marshaledJson))
 }

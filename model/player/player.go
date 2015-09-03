@@ -7,6 +7,7 @@ type Entity struct {
   strategy strategy.Interface
   deck *deck.Entity
   coins int
+  dead bool
 }
 
 func New(name string, strategy strategy.Interface, deck *deck.Entity, coins int) *Entity {
@@ -15,6 +16,7 @@ func New(name string, strategy strategy.Interface, deck *deck.Entity, coins int)
     strategy,
     deck,
     coins,
+    false,
   }
   return &entity
 }
@@ -45,4 +47,12 @@ func (entity *Entity) GiveCards(cards []int) {
 
 func (entity *Entity) DeckSize() int {
   return entity.deck.Size()
+}
+
+func (entity *Entity) Dead() bool {
+  return entity.dead
+}
+
+func (entity *Entity) Kill() {
+  entity.dead = true
 }

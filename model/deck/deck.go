@@ -46,6 +46,16 @@ func (entity *Entity) TakeTopCard() int {
   return cardTaken
 }
 
+func (entity *Entity) TakeBottomCard() int {
+  cardsRemaining := make([]int, entity.Size() - 1)
+  for i := 1; i < len(entity.cards) - 1; i++ {
+    cardsRemaining[i] = entity.cards[i]
+  }
+  cardTaken := entity.cards[0]
+  entity.cards = cardsRemaining
+  return cardTaken
+}
+
 func (entity *Entity) GiveCards(givenCards []int) {
   newCards := make([]int, len(entity.cards) + len(givenCards))
   for i := 0; i < len(entity.cards); i++ {
