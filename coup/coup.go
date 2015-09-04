@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/twoodhouse/coup-sim/model/strategy"
 	"github.com/twoodhouse/coup-sim/model/strategies/noLieStrategy"
+	"github.com/twoodhouse/coup-sim/model/strategies/thiefStrategy"
 	"github.com/twoodhouse/coup-sim/controller"
 	"fmt"
 )
@@ -27,13 +28,14 @@ func main() {
 		newStrategy := createStrategyByName(strategyName)
 		strategies[i] = newStrategy
 		if newStrategy != nil {
-			fmt.Printf("Found %q, what is its name?  ", newStrategy.GetName())
+			fmt.Printf("Found %q, what is its name?  ", newStrategy.GetStrategyName())
 			//TODO fix this so that it will error check for multiple players with same name
 			ni, err := fmt.Scanf("%s", &playerNames[i])
 			if err != nil {
 					fmt.Println(ni, err)
 					return
 			}
+			newStrategy.SetPlayerName(playerNames[i])
 			if numPlayers - i != 1 {
 				fmt.Println("What is the strategy for the next player?")
 			}
@@ -54,9 +56,9 @@ func createStrategyByName(name string) strategy.Interface {
 	case "noLie":
 		noLieStrategy := noLieStrategy.New()
 		return noLieStrategy
-	case "other":
-		noLieStrategy := noLieStrategy.New()
-		return noLieStrategy
+	case "thief":
+		thiefStrategy := thiefStrategy.New()
+		return thiefStrategy
 	}
 	return nil
 }

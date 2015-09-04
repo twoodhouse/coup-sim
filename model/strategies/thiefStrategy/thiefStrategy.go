@@ -1,4 +1,4 @@
-package noLieStrategy
+package thiefStrategy
 
 import "github.com/twoodhouse/coup-sim/model/log"
 import "github.com/twoodhouse/coup-sim/model/deck"
@@ -11,7 +11,7 @@ type Entity struct {
 
 func New() *Entity {
   var entity = Entity {
-    "noLieStr",
+    "thiefStr",
     "notSet",
   }
   return &entity
@@ -30,7 +30,7 @@ func (entity *Entity) SetPlayerName(name string) {
 }
 
 func (entity *Entity) GetAction(log *log.Entity, coinInfo map[string]int, faceupInfo map[string][]int, deck *deck.Entity) string {
-  return "tax"
+  return "steal"
 }
 
 func (entity *Entity) GetLossChoice(log *log.Entity, coinInfo map[string]int, faceupInfo map[string][]int, deck *deck.Entity) int {

@@ -48,18 +48,16 @@ func DoTurn(player *player.Entity, otherPlayers []*player.Entity, log *log.Entit
   action := player.Strategy().GetAction(log, table.PlayerCoins(), table.FaceupDecks(), player.Deck())
   log.SetPlayerName(player.Name())
   log.SetActionName(action)
-	// playerDeck := player.Deck()
-	// var card int
-
+	challengeLoss := false
 	//top-level challenge logic - it can only happen with these actions
 	if action == "tax" || action == "steal" || action == "assassinate" || action == "exchange" {
-
 		for i := 0; i < len(otherPlayers); i++ {
 			if !otherPlayers[i].Dead() && otherPlayers[i].Strategy().GetChallenge(log, table.PlayerCoins(), table.FaceupDecks(), player.Deck()) {
 				challengeSuccess := !player.Deck().HasCardForAction(action)
 				var cardLoss int
 				losingPlayer := player
 				if challengeSuccess {
+					challengeLoss = true
 					losingPlayer = player
 				} else {
 					losingPlayer = otherPlayers[i]
@@ -80,6 +78,21 @@ func DoTurn(player *player.Entity, otherPlayers []*player.Entity, log *log.Entit
 				log.CreateChallenge(otherPlayers[i].Name(), challengeSuccess, cardLoss)
 				break
 			}
+		}
+	}
+
+	if action == "tax" && !challengeLoss {
+		player.AddCoins(3)
+		table.AddCoins(-3)
+	}
+
+	if action == "steal" {
+		target := player.Strategy().GetTarget(log, table.PlayerCoins(), table.FaceupDecks(), player.Deck())
+		//TODO validate target
+		log.CreateTarget(target)
+		if !challengeLoss {
+			player.AddCoins(3)
+			table.AddCoins(-3)
 		}
 	}
 
