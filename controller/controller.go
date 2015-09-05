@@ -44,28 +44,44 @@ func StartGame(strategies []strategy.Interface, playerNames []string, numGames i
 	table.PrintTable()
 }
 
+//order of turn operation:
+//1. Assign action and target
+//2. Check general challenge concerning action
+//3. Check block from targeted player
+//4. Check challenge concerning block from source player
+//5. Set action results given challenge/block success
 func DoTurn(player *player.Entity, otherPlayers []*player.Entity, log *log.Entity, table *table.Entity, turnCounter int) (*log.Entity, *table.Entity) {
-  action := player.Strategy().GetAction(log, table.PlayerCoins(), table.FaceupDecks(), player.Deck())
+  action := player.Strategy().GetAction(log, table.PlayerNames(), table.PlayerCoins(), table.FaceupDecks(), player.Deck())
+	targetedPlayer := player //set default - not used unless assassinate or steal happens
   log.SetPlayerName(player.Name())
   log.SetActionName(action)
 	challengeLoss := false
 	var target string
 
-	if action == "steal" || action == "assassinate"{
-		target := player.Strategy().GetTarget(log, table.PlayerCoins(), table.FaceupDecks(), player.Deck())
-		if validOtherPlayerName(otherPlayers, target) {
+	//mid-game coin outputs
+	// fmt.Print(player.Name() + ": ")
+	// fmt.Print(player.Coins())
+	// fmt.Println()
+
+	if action != "coup" && player.Coins() >= 10{
+		disqualifyPlayer(player, table, log, "Player has 10+ coins and did not coup")
+	}
+
+	//get target for certain actions
+	if action == "steal" || action == "assassinate" || action == "coup" && !player.Dead(){
+		target = player.Strategy().GetTarget(log, table.PlayerNames(), table.PlayerCoins(), table.FaceupDecks(), player.Deck())
+		if validLiveOtherPlayerName(otherPlayers, target) {
 			log.CreateTarget(target)
 		} else {
-			disqualifyPlayer(player, table, log, "Target '" + target + "' is not a valid player name")
+			disqualifyPlayer(player, table, log, "Target '" + target + "' is not a valid opposing-player name")
 		}
 	}
 
 	//top-level challenge logic - it can only happen with these actions
 	if (action == "tax" || action == "steal" || action == "assassinate" || action == "exchange") && !player.Dead(){
 		for i := 0; i < len(otherPlayers); i++ {
-			if !otherPlayers[i].Dead() && otherPlayers[i].Strategy().GetChallenge(log, table.PlayerCoins(), table.FaceupDecks(), player.Deck()) {
+			if !otherPlayers[i].Dead() && otherPlayers[i].Strategy().GetChallenge(log, table.PlayerNames(), table.PlayerCoins(), table.FaceupDecks(), player.Deck()) {
 				challengeSuccess := !player.Deck().HasCardForAction(action)
-				var cardLoss int
 				losingPlayer := player
 				if challengeSuccess {
 					challengeLoss = true
@@ -73,37 +89,32 @@ func DoTurn(player *player.Entity, otherPlayers []*player.Entity, log *log.Entit
 				} else {
 					losingPlayer = otherPlayers[i]
 				}
-				lossChoice := losingPlayer.Strategy().GetLossChoice(log, table.PlayerCoins(), table.FaceupDecks(), losingPlayer.Deck())
-				if lossChoice == 0 {
-					cardLoss = losingPlayer.Deck().TakeTopCard()
-				} else {
-					cardLoss = losingPlayer.Deck().TakeBottomCard()
-				}
-
-				losingPlayerFaceupDeck := table.FaceupDecks()[losingPlayer.Name()]
-				if losingPlayerFaceupDeck[0] != 0 {
-					losingPlayerFaceupDeck[1] = losingPlayerFaceupDeck[0]
-				}
-				losingPlayerFaceupDeck[0] = cardLoss
-
+				cardLoss := revealCard(losingPlayer, table, log)
 				log.CreateChallenge(otherPlayers[i].Name(), challengeSuccess, cardLoss)
 				break
 			}
 		}
 	}
 
-	if action == "tax" && !challengeLoss {
+	if action == "tax" || action == "steal" || action == "coup" && !player.Dead(){
+		targetedPlayer = playerByName(otherPlayers, target)
+	}
+
+	if action == "tax" && !challengeLoss && !player.Dead(){
 		player.AddCoins(3)
 		table.AddCoins(-3)
 	}
 
-	if action == "steal" && !challengeLoss {
+	if action == "steal" && !challengeLoss && !player.Dead(){
 		player.AddCoins(2)
-		playerByName(otherPlayers, target).AddCoins(-2)
+		targetedPlayer.AddCoins(-2)
 	}
-  // if action == "steal" || action == "foreign aid" || action == "assassinate" {
-	//
-  // }
+
+	if action == "coup" && !player.Dead(){
+		player.AddCoins(-7)
+		log.CreateCardKilled(revealCard(targetedPlayer, table, log))
+	}
+
 	if table.FaceupDecks()[player.Name()][0] != 0 && table.FaceupDecks()[player.Name()][1] != 0 {
 		player.Kill()
 	}
@@ -126,9 +137,9 @@ func NumberDead(players []*player.Entity) int {
 	return num
 }
 
-func validOtherPlayerName(otherPlayers []*player.Entity, name string) bool {
+func validLiveOtherPlayerName(otherPlayers []*player.Entity, name string) bool {
 	for i := 0; i < len(otherPlayers); i++ {
-		if otherPlayers[i].Name() == name {
+		if otherPlayers[i].Name() == name && !otherPlayers[i].Dead(){
 			return true
 		}
 	}
@@ -161,4 +172,20 @@ func disqualifyPlayer(player *player.Entity, table *table.Entity, log *log.Entit
 		disqualifiedPlayerFaceupDeck[0] = player.Deck().TakeTopCard();
 	}
 	log.CreateDisqualify(reason)
+}
+
+func revealCard(player *player.Entity, table *table.Entity, log *log.Entity) int {
+	var cardLoss int
+	lossChoice := player.Strategy().GetLossChoice(log, table.PlayerNames(), table.PlayerCoins(), table.FaceupDecks(), player.Deck())
+	if lossChoice == 0 {
+		cardLoss = player.Deck().TakeTopCard()
+	} else {
+		cardLoss = player.Deck().TakeBottomCard()
+	}
+	losingPlayerFaceupDeck := table.FaceupDecks()[player.Name()]
+	if losingPlayerFaceupDeck[0] != 0 {
+		losingPlayerFaceupDeck[1] = losingPlayerFaceupDeck[0]
+	}
+	losingPlayerFaceupDeck[0] = cardLoss
+	return cardLoss
 }

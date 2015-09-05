@@ -62,6 +62,14 @@ func (entity *Entity) CreateDisqualify(reason string) {
   entity.jsonStr = (string(marshaledJson))
 }
 
+func (entity *Entity) CreateCardKilled(card int) {
+  log := unmarshalJsonArray(entity.jsonStr)
+  logTurn := log[len(log) - 1]
+  logTurn["cardKilled"] = card
+  marshaledJson, _ := json.Marshal(log)
+  entity.jsonStr = (string(marshaledJson))
+}
+
 func (entity *Entity) CreateChallenge(challenger string, success bool, flippedCard int) {
   log := unmarshalJsonArray(entity.jsonStr)
   logTurn := log[len(log) - 1]

@@ -38,9 +38,13 @@ func (entity *Entity) Players() []*player.Entity {
   return entity.players
 }
 
-// func (entity *Entity) PlayerNames() []string {
-//   return entity.players.Name()
-// }
+func (entity *Entity) PlayerNames() []string {
+  names := make([]string, len(entity.players))
+  for i := range entity.players {
+    names[i] = entity.players[i].Name()
+  }
+  return names
+}
 
 func (entity *Entity) FaceupDecks() map[string][]int {
   playerDecks := make(map[string][]int)
