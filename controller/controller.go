@@ -49,8 +49,19 @@ func DoTurn(player *player.Entity, otherPlayers []*player.Entity, log *log.Entit
   log.SetPlayerName(player.Name())
   log.SetActionName(action)
 	challengeLoss := false
+	var target string
+
+	if action == "steal" || action == "assassinate"{
+		target := player.Strategy().GetTarget(log, table.PlayerCoins(), table.FaceupDecks(), player.Deck())
+		if validOtherPlayerName(otherPlayers, target) {
+			log.CreateTarget(target)
+		} else {
+			disqualifyPlayer(player, table, log, "Target '" + target + "' is not a valid player name")
+		}
+	}
+
 	//top-level challenge logic - it can only happen with these actions
-	if action == "tax" || action == "steal" || action == "assassinate" || action == "exchange" {
+	if (action == "tax" || action == "steal" || action == "assassinate" || action == "exchange") && !player.Dead(){
 		for i := 0; i < len(otherPlayers); i++ {
 			if !otherPlayers[i].Dead() && otherPlayers[i].Strategy().GetChallenge(log, table.PlayerCoins(), table.FaceupDecks(), player.Deck()) {
 				challengeSuccess := !player.Deck().HasCardForAction(action)
@@ -86,16 +97,10 @@ func DoTurn(player *player.Entity, otherPlayers []*player.Entity, log *log.Entit
 		table.AddCoins(-3)
 	}
 
-	if action == "steal" {
-		target := player.Strategy().GetTarget(log, table.PlayerCoins(), table.FaceupDecks(), player.Deck())
-		//TODO validate target
-		log.CreateTarget(target)
-		if !challengeLoss {
-			player.AddCoins(3)
-			table.AddCoins(-3)
-		}
+	if action == "steal" && !challengeLoss {
+		player.AddCoins(2)
+		playerByName(otherPlayers, target).AddCoins(-2)
 	}
-
   // if action == "steal" || action == "foreign aid" || action == "assassinate" {
 	//
   // }
@@ -119,4 +124,41 @@ func NumberDead(players []*player.Entity) int {
 		}
 	}
 	return num
+}
+
+func validOtherPlayerName(otherPlayers []*player.Entity, name string) bool {
+	for i := 0; i < len(otherPlayers); i++ {
+		if otherPlayers[i].Name() == name {
+			return true
+		}
+	}
+	return false
+}
+
+func playerByName(players []*player.Entity, name string) *player.Entity {
+	for i := 0; i < len(players); i++ {
+		if players[i].Name() == name {
+			return players[i]
+		}
+	}
+	//not sure to deal with this - I have to return a player, can't do nil
+	//make sure to validate the player exists before running this function
+	return players[0]
+}
+
+func disqualifyPlayer(player *player.Entity, table *table.Entity, log *log.Entity, reason string) {
+	player.Kill()
+	disqualifiedPlayerFaceupDeck := table.FaceupDecks()[player.Name()]
+	if disqualifiedPlayerFaceupDeck[0] != 0 {
+		disqualifiedPlayerFaceupDeck[1] = disqualifiedPlayerFaceupDeck[0]
+	}
+	disqualifiedPlayerFaceupDeck[0] = player.Deck().TakeTopCard();
+	if player.Deck().Size() > 0 {
+		disqualifiedPlayerFaceupDeck := table.FaceupDecks()[player.Name()]
+		if disqualifiedPlayerFaceupDeck[0] != 0 {
+			disqualifiedPlayerFaceupDeck[1] = disqualifiedPlayerFaceupDeck[0]
+		}
+		disqualifiedPlayerFaceupDeck[0] = player.Deck().TakeTopCard();
+	}
+	log.CreateDisqualify(reason)
 }

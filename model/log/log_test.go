@@ -22,6 +22,7 @@ func TestLogCreation(t *testing.T) {
   log.CreateTarget("Michael")
   log.CreateBlock()
   log.CreateBlockChallenge(true, 1)
+  log.CreateDisqualify("testing disqualify mechanism")
   fmt.Println(log.PrettyJsonStr())
   // log.SetActionName("income")
   // log.NewTurn("Trevor")

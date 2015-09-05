@@ -49,6 +49,10 @@ func (entity *Entity) GetBlock(log *log.Entity, coinInfo map[string]int, faceupI
   return false
 }
 
-func (entity *Entity) GetAmbassadorReturns(log *log.Entity, coinInfo map[string]int, faceupInfo map[string][]int, c1 string, c2 string, deck *deck.Entity) (string, string) {
+func (entity *Entity) GetStealBlockCardChoice(log *log.Entity, coinInfo map[string]int, faceupInfo map[string][]int, deck *deck.Entity) int {
+  return 2
+}
+
+func (entity *Entity) GetAmbassadorReturns(log *log.Entity, coinInfo map[string]int, faceupInfo map[string][]int, c1 int, c2 int, deck *deck.Entity) (int, int) {
   return c1, c2
 }
