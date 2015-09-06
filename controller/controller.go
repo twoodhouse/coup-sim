@@ -6,6 +6,7 @@ import (
 	"github.com/twoodhouse/coup-sim/model/log"
   "github.com/twoodhouse/coup-sim/model/table"
   "github.com/twoodhouse/coup-sim/model/player"
+	"strconv"
 	// "github.com/twoodhouse/coup-sim/model/strategies/noLieStrategy"
 )
 
@@ -64,7 +65,7 @@ func DoTurn(player *player.Entity, otherPlayers []*player.Entity, log *log.Entit
 	// fmt.Println()
 
 	if action != "coup" && player.Coins() >= 10{
-		disqualifyPlayer(player, table, log, "Player has 10+ coins and did not coup")
+		disqualifyPlayer(player, table, log, "Player had 10+ coins and did not coup")
 	}
 
 	//get target for certain actions
@@ -80,7 +81,7 @@ func DoTurn(player *player.Entity, otherPlayers []*player.Entity, log *log.Entit
 	//top-level challenge logic - it can only happen with these actions
 	if (action == "tax" || action == "steal" || action == "assassinate" || action == "exchange") && !player.Dead(){
 		for i := 0; i < len(otherPlayers); i++ {
-			if !otherPlayers[i].Dead() && otherPlayers[i].Strategy().GetChallenge(log, table.PlayerNames(), table.PlayerCoins(), table.FaceupDecks(), player.Deck()) {
+			if !otherPlayers[i].Dead() && otherPlayers[i].Strategy().GetChallenge(log, table.PlayerNames(), table.PlayerCoins(), table.FaceupDecks(), otherPlayers[i].Deck()) {
 				challengeSuccess := !player.Deck().HasCardForAction(action)
 				losingPlayer := player
 				if challengeSuccess {
@@ -96,7 +97,66 @@ func DoTurn(player *player.Entity, otherPlayers []*player.Entity, log *log.Entit
 		}
 	}
 
-	if action == "tax" || action == "steal" || action == "coup" && !player.Dead(){
+	if (action == "steal" || action == "assassinate") && !player.Dead() && !challengeLoss && !targetedPlayer.Dead(){
+		if targetedPlayer.Strategy().GetBlock(log, table.PlayerNames(), table.PlayerCoins(), table.FaceupDecks(), player.Deck()) {
+			log.CreateBlock()
+			var blockCardClaim int
+			if action == "steal" {
+				blockCardClaim = targetedPlayer.Strategy().GetStealBlockCardChoice(log, table.PlayerNames(), table.PlayerCoins(), table.FaceupDecks(), player.Deck())
+				log.CreateBlockCardClaim(blockCardClaim)
+			}
+			if player.Strategy().GetChallenge(log, table.PlayerNames(), table.PlayerCoins(), table.FaceupDecks(), player.Deck()) {
+				var neededCardAction string
+				if action == "steal" {
+					if blockCardClaim == 2 {
+						neededCardAction = "steal"
+					} else if blockCardClaim == 5 {
+						neededCardAction = "exchange"
+					} else {
+						disqualifyPlayer(targetedPlayer, table, log, "Block card '" + strconv.Itoa(blockCardClaim) + "' is not valid for blocking steal'")
+					}
+				} else if action == "assassinate" {
+					neededCardAction = "block"
+				}
+				challengeSuccess := !player.Deck().HasCardForAction(neededCardAction)
+				losingPlayer := player
+				if challengeSuccess {
+					losingPlayer = targetedPlayer
+				} else {
+					challengeLoss = true
+					losingPlayer = player
+				}
+				cardLoss := revealCard(losingPlayer, table, log)
+				log.CreateBlockChallenge(challengeSuccess, cardLoss)
+			} else {
+				challengeLoss = true
+			}
+		}
+	}
+
+	if action == "foreign aid" && !player.Dead() && !challengeLoss && !targetedPlayer.Dead() {
+		for i := 0; i < len(otherPlayers); i++ {
+			if !otherPlayers[i].Dead() && otherPlayers[i].Strategy().GetBlock(log, table.PlayerNames(), table.PlayerCoins(), table.FaceupDecks(), player.Deck()) {
+				log.CreateBlock()
+				log.CreateBlocker(otherPlayers[i].Name())
+				if player.Strategy().GetChallenge(log, table.PlayerNames(), table.PlayerCoins(), table.FaceupDecks(), player.Deck()) {
+					challengeSuccess := !otherPlayers[i].Deck().HasCardForAction("tax")
+					losingPlayer := player
+					if challengeSuccess {
+						challengeLoss = true
+						losingPlayer = otherPlayers[i]
+					} else {
+						losingPlayer = player
+					}
+					cardLoss := revealCard(losingPlayer, table, log)
+					log.CreateBlockChallenge(challengeSuccess, cardLoss)
+				}
+				break
+			}
+		}
+	}
+
+	if (action == "tax" || action == "steal" || action == "coup") && !player.Dead(){
 		targetedPlayer = playerByName(otherPlayers, target)
 	}
 

@@ -1,9 +1,9 @@
-package thiefStrategy
+package consoleStrategy
 
 import "github.com/twoodhouse/coup-sim/model/log"
 import "github.com/twoodhouse/coup-sim/model/deck"
 import "encoding/json"
-// import "fmt"
+import "fmt"
 
 type Entity struct {
   strategyName string
@@ -12,7 +12,7 @@ type Entity struct {
 
 func New() *Entity {
   var entity = Entity {
-    "thiefStr",
+    "consoleStr",
     "notSet",
   }
   return &entity
@@ -31,7 +31,12 @@ func (entity *Entity) SetPlayerName(name string) {
 }
 
 func (entity *Entity) GetAction(log *log.Entity, playerNames []string, coinInfo map[string]int, faceupInfo map[string][]int, deck *deck.Entity) string {
-  return "steal"
+  fmt.Println(log.PrettyJsonStr())
+  printPersonalTable(playerNames, coinInfo, faceupInfo, deck)
+  var action string
+  fmt.Printf("GetAction:\n> ")
+  fmt.Scanf("%s\n", &action)
+  return action
 }
 
 func (entity *Entity) GetLossChoice(log *log.Entity, playerNames []string, coinInfo map[string]int, faceupInfo map[string][]int, deck *deck.Entity) int {
@@ -39,27 +44,30 @@ func (entity *Entity) GetLossChoice(log *log.Entity, playerNames []string, coinI
 }
 
 func (entity *Entity) GetTarget(log *log.Entity, playerNames []string, coinInfo map[string]int, faceupInfo map[string][]int, deck *deck.Entity) string {
-  var choice string
-  for i := range playerNames {
-    if playerNames[i] != entity.playerName && faceupInfo[playerNames[i]][1] == 0 {
-      choice = playerNames[i]
-    }
-  }
-  return choice
+  fmt.Println(log.PrettyJsonStr())
+  printPersonalTable(playerNames, coinInfo, faceupInfo, deck)
+  var target string
+  fmt.Printf("GetTarget:\n> ")
+  fmt.Scanf("%s\n", &target)
+  return target
 }
 
 func (entity *Entity) GetChallenge(log *log.Entity, playerNames []string, coinInfo map[string]int, faceupInfo map[string][]int, deck *deck.Entity) bool {
-  logObj := unmarshalJsonArray(log.JsonStr())
-  logTurn := logObj[len(logObj) - 1]
-  action := logTurn["action"].(map[string]interface{})
-  if action["target"] == entity.playerName {
-    return true
-  }
-  return false
+  fmt.Println(log.PrettyJsonStr())
+  printPersonalTable(playerNames, coinInfo, faceupInfo, deck)
+  var challenge bool
+  fmt.Printf("GetChallenge:\n> ")
+  fmt.Scanf("%t\n", &challenge)
+  return challenge
 }
 
 func (entity *Entity) GetBlock(log *log.Entity, playerNames []string, coinInfo map[string]int, faceupInfo map[string][]int, deck *deck.Entity) bool {
-  return true
+  fmt.Println(log.PrettyJsonStr())
+  printPersonalTable(playerNames, coinInfo, faceupInfo, deck)
+  var block bool
+  fmt.Printf("GetBlock:\n> ")
+  fmt.Scanf("%t\n", &block)
+  return block
 }
 
 func (entity *Entity) GetStealBlockCardChoice(log *log.Entity, playerNames []string, coinInfo map[string]int, faceupInfo map[string][]int, deck *deck.Entity) int {
@@ -86,4 +94,15 @@ func unmarshalJson(str string) map[string]interface{} {
     panic(err)
   }
   return dat
+}
+
+func printPersonalTable(playerNames []string, coinInfo map[string]int, faceupInfo map[string][]int, deck *deck.Entity) {
+  fmt.Print("Your secret cards: ")
+  for i := range deck.Cards() {
+    fmt.Print(deck.Cards()[i])
+    fmt.Println()
+  }
+  for i := range playerNames {
+    fmt.Printf("%s: %d%d - %d coins\n", playerNames[i], faceupInfo[playerNames[i]][0], faceupInfo[playerNames[i]][1], coinInfo[playerNames[i]])
+  }
 }

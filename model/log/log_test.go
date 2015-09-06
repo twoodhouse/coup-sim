@@ -22,6 +22,7 @@ func TestLogCreation(t *testing.T) {
   log.CreateTarget("Michael")
   log.CreateBlock()
   log.CreateBlockChallenge(true, 1)
+  log.CreateBlockCardClaim(2)
   log.CreateDisqualify("testing disqualify mechanism")
   log.CreateCardKilled(3)
   fmt.Println(log.PrettyJsonStr())

@@ -54,6 +54,15 @@ func (entity *Entity) CreateTarget(target string) {
   entity.jsonStr = (string(marshaledJson))
 }
 
+func (entity *Entity) CreateBlockCardClaim(card int) {
+  log := unmarshalJsonArray(entity.jsonStr)
+  logTurn := log[len(log) - 1]
+  action := logTurn["block"].(map[string]interface{})
+  action["cardClaim"] = card
+  marshaledJson, _ := json.Marshal(log)
+  entity.jsonStr = (string(marshaledJson))
+}
+
 func (entity *Entity) CreateDisqualify(reason string) {
   log := unmarshalJsonArray(entity.jsonStr)
   logTurn := log[len(log) - 1]
@@ -88,6 +97,15 @@ func (entity *Entity) CreateBlock() {
   log := unmarshalJsonArray(entity.jsonStr)
   logTurn := log[len(log) - 1]
   logTurn["block"] = unmarshalJson("{}")
+  marshaledJson, _ := json.Marshal(log)
+  entity.jsonStr = (string(marshaledJson))
+}
+
+func (entity *Entity) CreateBlocker(name string) {
+  log := unmarshalJsonArray(entity.jsonStr)
+  logTurn := log[len(log) - 1]
+  block := logTurn["block"].(map[string]interface{})
+  block["blocker"] = name
   marshaledJson, _ := json.Marshal(log)
   entity.jsonStr = (string(marshaledJson))
 }

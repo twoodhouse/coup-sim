@@ -19,7 +19,7 @@ type Interface interface {
   //return a valud player
   GetTarget(*log.Entity, []string, map[string]int, map[string][]int, *deck.Entity) string
 
-  //return 0 or 1 to specify which of your cards will be lost
+  //return 0 or 1 to specify which of your cards will be lost, top or bottom (same if only one left)
   GetLossChoice(*log.Entity, []string, map[string]int, map[string][]int, *deck.Entity) int
 
   //return challenge choice for the current player's action

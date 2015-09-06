@@ -97,6 +97,8 @@ func (entity *Entity) HasCardForAction(cardActionName string) bool {
     cardValue = 2
   case "assassinate":
     cardValue = 3
+  case "block":
+    cardValue = 4
   case "exchange":
     cardValue = 5
   }

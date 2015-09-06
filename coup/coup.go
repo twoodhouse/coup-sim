@@ -4,6 +4,7 @@ import (
 	"github.com/twoodhouse/coup-sim/model/strategy"
 	"github.com/twoodhouse/coup-sim/model/strategies/noLieStrategy"
 	"github.com/twoodhouse/coup-sim/model/strategies/thiefStrategy"
+	"github.com/twoodhouse/coup-sim/model/strategies/consoleStrategy"
 	"github.com/twoodhouse/coup-sim/controller"
 	"fmt"
 )
@@ -59,6 +60,9 @@ func createStrategyByName(name string) strategy.Interface {
 	case "thief":
 		thiefStrategy := thiefStrategy.New()
 		return thiefStrategy
+	case "console":
+		consoleStrategy := consoleStrategy.New()
+		return consoleStrategy
 	}
 	return nil
 }
