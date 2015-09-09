@@ -84,15 +84,15 @@ func (entity *Entity) GetStealBlockCardChoice(log *log.Entity, playerNames []str
   return choice
 }
 
-func (entity *Entity) GetExchangeKeepChoices(log *log.Entity, playerNames []string, coinInfo map[string]int, faceupInfo map[string][]int, deck *deck.Entity) (int, int) {
+func (entity *Entity) GetExchangeReturnChoices(log *log.Entity, playerNames []string, coinInfo map[string]int, faceupInfo map[string][]int, deck *deck.Entity) (int, int) {
   fmt.Println(log.PrettyJsonStr())
   // fmt.Printf("Cards gained by using exchange: %d%d\n", c1, c2)
   printPersonalTable(entity.playerName, playerNames, coinInfo, faceupInfo, deck)
   var r1 int
-  fmt.Printf("GetExchangeKeepChoices(1):\n> ")
+  fmt.Printf("GetExchangeReturnChoices(1):\n> ")
   fmt.Scanf("%d\n", &r1)
   var r2 int
-  fmt.Printf("GetExchangeKeepChoices(2):\n> ")
+  fmt.Printf("GetExchangeReturnChoices(2):\n> ")
   fmt.Scanf("%d\n", &r2)
   return r1, r2
 }

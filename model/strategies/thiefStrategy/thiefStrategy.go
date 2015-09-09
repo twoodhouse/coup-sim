@@ -68,7 +68,7 @@ func (entity *Entity) GetStealBlockCardChoice(log *log.Entity, playerNames []str
   return 2
 }
 
-func (entity *Entity) GetExchangeKeepChoices(log *log.Entity, playerNames []string, coinInfo map[string]int, faceupInfo map[string][]int, deck *deck.Entity) (int, int) {
+func (entity *Entity) GetExchangeReturnChoices(log *log.Entity, playerNames []string, coinInfo map[string]int, faceupInfo map[string][]int, deck *deck.Entity) (int, int) {
   return 1,1
 }
 
