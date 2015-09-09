@@ -1,7 +1,7 @@
 package log
 
 import "encoding/json"
-import "strconv"
+// import "strconv"
 // import "fmt"
 
 type Entity struct {
@@ -79,7 +79,7 @@ func (entity *Entity) CreateCardKilled(card int) {
   entity.jsonStr = (string(marshaledJson))
 }
 
-func (entity *Entity) CreateChallenge(challenger string, success bool, flippedCard int) {
+func (entity *Entity) CreateChallenge(challenger string, success bool) {
   log := unmarshalJsonArray(entity.jsonStr)
   logTurn := log[len(log) - 1]
   var successStr string
@@ -88,7 +88,16 @@ func (entity *Entity) CreateChallenge(challenger string, success bool, flippedCa
   } else {
     successStr = "false"
   }
-  logTurn["challenge"] = unmarshalJson("{\"challenger\": \"" + challenger + "\", \"success\": " + successStr  + ", \"cardLoss\": " + strconv.Itoa(flippedCard) + "}")
+  logTurn["challenge"] = unmarshalJson("{\"challenger\": \"" + challenger + "\", \"success\": " + successStr + "}")
+  marshaledJson, _ := json.Marshal(log)
+  entity.jsonStr = (string(marshaledJson))
+}
+
+func (entity *Entity) CreateChallengeCardLoss(flippedCard int) {
+  log := unmarshalJsonArray(entity.jsonStr)
+  logTurn := log[len(log) - 1]
+  block := logTurn["challenge"].(map[string]interface{})
+  block["cardLoss"] = flippedCard
   marshaledJson, _ := json.Marshal(log)
   entity.jsonStr = (string(marshaledJson))
 }
@@ -110,7 +119,7 @@ func (entity *Entity) CreateBlocker(name string) {
   entity.jsonStr = (string(marshaledJson))
 }
 
-func (entity *Entity) CreateBlockChallenge(challengeSuccess bool, flippedCard int) {
+func (entity *Entity) CreateBlockChallenge(challengeSuccess bool) {
   log := unmarshalJsonArray(entity.jsonStr)
   logTurn := log[len(log) - 1]
   block := logTurn["block"].(map[string]interface{})
@@ -121,7 +130,15 @@ func (entity *Entity) CreateBlockChallenge(challengeSuccess bool, flippedCard in
     successStr = "false"
   }
   block["challengeSuccess"] = successStr
-  block["cardLoss"] = strconv.Itoa(flippedCard)
+  marshaledJson, _ := json.Marshal(log)
+  entity.jsonStr = (string(marshaledJson))
+}
+
+func (entity *Entity) CreateBlockChallengeCardLoss(flippedCard int) {
+  log := unmarshalJsonArray(entity.jsonStr)
+  logTurn := log[len(log) - 1]
+  block := logTurn["block"].(map[string]interface{})
+  block["cardLoss"] = flippedCard
   marshaledJson, _ := json.Marshal(log)
   entity.jsonStr = (string(marshaledJson))
 }

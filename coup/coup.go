@@ -20,7 +20,7 @@ func main() {
 
 	var strategyName string
 	for i := 0; i < numPlayers; i++ {
-		fmt.Printf(">")
+		fmt.Printf("> ")
 		ni, err := fmt.Scanf("%s", &strategyName)
 		if err != nil {
 				fmt.Println(ni, err)

@@ -62,6 +62,10 @@ func (entity *Entity) PlayerCoins() map[string]int {
   return playerCoins
 }
 
+func (entity *Entity) CenterDeck() *deck.Entity {
+  return entity.centerDeck
+}
+
 func (entity *Entity) AddCoins(number int) {
   entity.coins = entity.coins + number;
 }

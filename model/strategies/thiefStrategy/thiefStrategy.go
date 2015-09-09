@@ -31,7 +31,7 @@ func (entity *Entity) SetPlayerName(name string) {
 }
 
 func (entity *Entity) GetAction(log *log.Entity, playerNames []string, coinInfo map[string]int, faceupInfo map[string][]int, deck *deck.Entity) string {
-  return "steal"
+  return "foreign_aid"
 }
 
 func (entity *Entity) GetLossChoice(log *log.Entity, playerNames []string, coinInfo map[string]int, faceupInfo map[string][]int, deck *deck.Entity) int {
@@ -49,13 +49,15 @@ func (entity *Entity) GetTarget(log *log.Entity, playerNames []string, coinInfo 
 }
 
 func (entity *Entity) GetChallenge(log *log.Entity, playerNames []string, coinInfo map[string]int, faceupInfo map[string][]int, deck *deck.Entity) bool {
-  logObj := unmarshalJsonArray(log.JsonStr())
-  logTurn := logObj[len(logObj) - 1]
-  action := logTurn["action"].(map[string]interface{})
-  if action["target"] == entity.playerName {
-    return true
-  }
-  return false
+  // logObj := unmarshalJsonArray(log.JsonStr())
+  // logTurn := logObj[len(logObj) - 1]
+  // action := logTurn["action"].(map[string]interface{})
+  // if action["target"] == entity.playerName {
+  //   return true
+  // }
+  // return false
+
+  return true
 }
 
 func (entity *Entity) GetBlock(log *log.Entity, playerNames []string, coinInfo map[string]int, faceupInfo map[string][]int, deck *deck.Entity) bool {
@@ -66,8 +68,8 @@ func (entity *Entity) GetStealBlockCardChoice(log *log.Entity, playerNames []str
   return 2
 }
 
-func (entity *Entity) GetAmbassadorReturns(log *log.Entity, playerNames []string, coinInfo map[string]int, faceupInfo map[string][]int, c1 int, c2 int, deck *deck.Entity) (int, int) {
-  return c1, c2
+func (entity *Entity) GetExchangeKeepChoices(log *log.Entity, playerNames []string, coinInfo map[string]int, faceupInfo map[string][]int, deck *deck.Entity) (int, int) {
+  return 1,1
 }
 
 func unmarshalJsonArray(str string) []map[string]interface{} {

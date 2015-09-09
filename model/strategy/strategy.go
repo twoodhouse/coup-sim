@@ -31,6 +31,6 @@ type Interface interface {
   //return a 2 or a 5 (captain or ambassador respectively)
   GetStealBlockCardChoice(*log.Entity, []string, map[string]int, map[string][]int, *deck.Entity) int
 
-  //return two ints (1-5) which are the returned cards
-  GetAmbassadorReturns(*log.Entity, []string, map[string]int, map[string][]int, int, int, *deck.Entity) (int,int)
+  //return two ints (1-5) which are the kept cards
+  GetExchangeKeepChoices(*log.Entity, []string, map[string]int, map[string][]int, *deck.Entity) (int,int)
 }

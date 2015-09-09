@@ -19,7 +19,7 @@ func NewRandomCenter() *Entity {
   var entity = Entity {
     cards,
   }
-  entity.shuffleCards()
+  entity.ShuffleCards()
   return &entity
 }
 
@@ -48,8 +48,8 @@ func (entity *Entity) TakeTopCard() int {
 
 func (entity *Entity) TakeBottomCard() int {
   cardsRemaining := make([]int, entity.Size() - 1)
-  for i := 1; i < len(entity.cards) - 1; i++ {
-    cardsRemaining[i] = entity.cards[i]
+  for i := 0; i < len(entity.cards) - 1; i++ {
+    cardsRemaining[i] = entity.cards[i + 1]
   }
   cardTaken := entity.cards[0]
   entity.cards = cardsRemaining
@@ -62,13 +62,13 @@ func (entity *Entity) GiveCards(givenCards []int) {
     newCards[i] = entity.cards[i]
   }
   for i := 0; i < len(givenCards); i++ {
-    newCards[i + len(entity.cards)] = entity.cards[i]
+    newCards[i + len(entity.cards)] = givenCards[i]
   }
   entity.cards = newCards
-  entity.shuffleCards()
+  entity.ShuffleCards()
 }
 
-func (entity *Entity) shuffleCards() {
+func (entity *Entity) ShuffleCards() {
   inbound := entity.cards
   dest := make([]int, len(inbound))
   rand.Seed(time.Now().Unix())
@@ -108,4 +108,25 @@ func (entity *Entity) HasCardForAction(cardActionName string) bool {
     }
   }
   return hasCard
+}
+
+func (entity *Entity) HasCards(c1 int, c2 int) bool {
+  c1Found := false
+  c2Found := false
+  for i := 0; i < len(entity.cards); i++ {
+    if entity.cards[i] == c1 && !c1Found {
+      c1Found = true
+    } else if entity.cards[i] == c2 && !c2Found {
+      c2Found = true
+    }
+  }
+  return c1Found && c2Found
+}
+
+func (entity *Entity) ReplaceCardWithCard(oldCard int, newCard int) {
+  if entity.Cards()[0] == oldCard {
+    entity.Cards()[0] = newCard
+  } else if entity.Cards()[1] == oldCard {
+    entity.Cards()[1] = newCard
+  }
 }
