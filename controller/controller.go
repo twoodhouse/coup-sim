@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"fmt"
+	// "fmt"
 	"github.com/twoodhouse/coup-sim/model/strategy"
 	"github.com/twoodhouse/coup-sim/model/log"
   "github.com/twoodhouse/coup-sim/model/table"
@@ -9,11 +9,12 @@ import (
 	"strconv"
 )
 
-func StartGame(strategies []strategy.Interface, playerNames []string, numGames int) {
+func StartGame(strategies []*strategy.Interface, playerNames []string, numGames int) (string,[]*strategy.Interface) {
   table := table.New(strategies, playerNames)
   players := table.Players()
   log := log.New()
   gameComplete := false
+	var winner string
   for turnCounter := 0; !gameComplete; turnCounter++ {
 		playerTurn := turnCounter % len(players)
     currentPlayer := players[playerTurn]
@@ -33,15 +34,20 @@ func StartGame(strategies []strategy.Interface, playerNames []string, numGames i
 		}
     if NumberDead(players) == len(players) - 1 {
       gameComplete = true
+			for i := range players {
+				if players[i].Deck().Size() > 0 {
+					winner = players[i].Name()
+				}
+			}
     } else {
 			if !deadTurn {
 				log.NextTurn()
 			}
     }
   }
-
-  fmt.Println(log.PrettyJsonStr())
-	table.PrintTable()
+  // fmt.Println(log.PrettyJsonStr())
+	// table.PrintTable()
+	return winner, strategies
 }
 
 //order of turn operation:
@@ -157,6 +163,9 @@ func DoTurn(player *player.Entity, otherPlayers []*player.Entity, log *log.Entit
 				var cardValue int
 				if challengeSuccess {
 					losingPlayer = targetedPlayer
+				} else {
+					challengeLoss = true
+					losingPlayer = player
 					switch neededCardAction {
 					case "tax":
 						cardValue = 1
@@ -169,10 +178,7 @@ func DoTurn(player *player.Entity, otherPlayers []*player.Entity, log *log.Entit
 					case "exchange":
 						cardValue = 5
 					}
-					swapChallengedCard(player, table, log, cardValue)
-				} else {
-					challengeLoss = true
-					losingPlayer = player
+					swapChallengedCard(targetedPlayer, table, log, cardValue)
 				}
 				log.CreateBlockChallenge(challengeSuccess)
 				cardLoss := revealCard(losingPlayer, table, log)
@@ -187,14 +193,15 @@ func DoTurn(player *player.Entity, otherPlayers []*player.Entity, log *log.Entit
 		for i := 0; i < len(otherPlayers); i++ {
 			if !otherPlayers[i].Dead() && otherPlayers[i].Strategy().GetBlock(log, table.PlayerNames(), table.PlayerCoins(), table.FaceupDecks(), otherPlayers[i].Deck()) {
 				log.CreateBlock()
+				challengeLoss = true
 				log.CreateBlocker(otherPlayers[i].Name())
 				if player.Strategy().GetChallenge(log, table.PlayerNames(), table.PlayerCoins(), table.FaceupDecks(), player.Deck()) {
 					challengeSuccess := !otherPlayers[i].Deck().HasCardForAction("tax")
 					losingPlayer := player
 					if challengeSuccess {
 						losingPlayer = otherPlayers[i]
+						challengeLoss = false
 					} else {
-						challengeLoss = true
 						losingPlayer = player
 						swapChallengedCard(otherPlayers[i], table, log, 1)
 					}
@@ -236,7 +243,7 @@ func DoTurn(player *player.Entity, otherPlayers []*player.Entity, log *log.Entit
 		log.CreateCardKilled(revealCard(targetedPlayer, table, log))
 	}
 
-	if action == "assassinate" && !challengeLoss && !player.Dead(){
+	if action == "assassinate" && !challengeLoss && !player.Dead() && !targetedPlayer.Dead(){
 		log.CreateCardKilled(revealCard(targetedPlayer, table, log))
 	}
 
@@ -251,7 +258,7 @@ func DoTurn(player *player.Entity, otherPlayers []*player.Entity, log *log.Entit
 			disqualifyPlayer(player, table, log, "Player gave invalid card returns " + strconv.Itoa(r1) + "," + strconv.Itoa(r2))
 			table.CenterDeck().GiveCards([]int{c1,c2})
 		} else {
-			fourCards := player.Deck().TakeCards(4)
+			fourCards := player.Deck().TakeCards(player.Deck().Size())
 			returnToTableCards := make([]int, 2)
 			r1found := false
 			r2found := false

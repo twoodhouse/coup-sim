@@ -17,7 +17,7 @@ func New() *Entity {
     "RandomStr",
     "notSet",
   }
-  rand.Seed(time.Now().Unix())
+  rand.Seed(time.Now().UnixNano())
   return &entity
 }
 
@@ -26,7 +26,7 @@ func (entity *Entity) GetStrategyName() string {
 }
 
 func (entity *Entity) GetDuelFirstCardChoice() int {
-  return 1
+  return int(rand.Int31n(int32(5))) + 1
 }
 
 func (entity *Entity) SetPlayerName(name string) {
@@ -34,45 +34,74 @@ func (entity *Entity) SetPlayerName(name string) {
 }
 
 func (entity *Entity) GetAction(log *log.Entity, playerNames []string, coinInfo map[string]int, faceupInfo map[string][]int, deck *deck.Entity) string {
-  return "foreign_aid"
+  rand.Seed(time.Now().UnixNano())
+  viableActions := make([]string, 0)
+  viableActions = append(viableActions, "income")
+  viableActions = append(viableActions, "foreign_aid")
+  viableActions = append(viableActions, "tax")
+  viableActions = append(viableActions, "steal")
+  viableActions = append(viableActions, "exchange")
+  if coinInfo[entity.playerName] >= 3 {
+    viableActions = append(viableActions, "assassinate")
+  }
+  if coinInfo[entity.playerName] >= 7 {
+    viableActions = append(viableActions, "coup")
+  }
+
+  if coinInfo[entity.playerName] >= 10 {
+    return "coup"
+  }
+  return viableActions[rand.Int31n(int32(len(viableActions)))]
 }
 
 func (entity *Entity) GetLossChoice(log *log.Entity, playerNames []string, coinInfo map[string]int, faceupInfo map[string][]int, deck *deck.Entity) int {
-  return 0
+  if rand.Int31n(int32(2)) == 1 {
+    return 0
+  }
+  return 1
 }
 
 func (entity *Entity) GetTarget(log *log.Entity, playerNames []string, coinInfo map[string]int, faceupInfo map[string][]int, deck *deck.Entity) string {
-  var choice string
+  rand.Seed(time.Now().UnixNano())
+  var choices []string
   for i := range playerNames {
     if playerNames[i] != entity.playerName && faceupInfo[playerNames[i]][1] == 0 {
-      choice = playerNames[i]
+      choices = append(choices, playerNames[i])
     }
   }
-  return choice
+  return choices[rand.Int31n(int32(len(choices)))]
 }
 
 func (entity *Entity) GetChallenge(log *log.Entity, playerNames []string, coinInfo map[string]int, faceupInfo map[string][]int, deck *deck.Entity) bool {
-  // logObj := unmarshalJsonArray(log.JsonStr())
-  // logTurn := logObj[len(logObj) - 1]
-  // action := logTurn["action"].(map[string]interface{})
-  // if action["target"] == entity.playerName {
-  //   return true
-  // }
-  // return false
-
-  return true
+  rand.Seed(time.Now().UnixNano())
+  if rand.Int31n(int32(2)) == 1 {
+    return true
+  }
+  return false
 }
 
 func (entity *Entity) GetBlock(log *log.Entity, playerNames []string, coinInfo map[string]int, faceupInfo map[string][]int, deck *deck.Entity) bool {
-  return true
+  rand.Seed(time.Now().UnixNano())
+  if rand.Int31n(int32(2)) == 1 {
+    return true
+  }
+  return false
 }
 
 func (entity *Entity) GetStealBlockCardChoice(log *log.Entity, playerNames []string, coinInfo map[string]int, faceupInfo map[string][]int, deck *deck.Entity) int {
-  return 2
+  if rand.Int31n(int32(2)) == 1 {
+    return 2
+  }
+  return 5
 }
 
 func (entity *Entity) GetExchangeReturnChoices(log *log.Entity, playerNames []string, coinInfo map[string]int, faceupInfo map[string][]int, deck *deck.Entity) (int, int) {
-  return 1,1
+  choice1 := rand.Int31n(int32(deck.Size()))
+  var choice2 int32
+  for choice2 == choice1 {
+    choice2 = rand.Int31n(int32(deck.Size()))
+  }
+  return deck.Cards()[choice1], deck.Cards()[choice2]
 }
 
 func unmarshalJsonArray(str string) []map[string]interface{} {

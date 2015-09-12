@@ -1,12 +1,9 @@
 package main
 
 import (
-	"github.com/twoodhouse/coup-sim/model/strategy"
-	"github.com/twoodhouse/coup-sim/model/strategies/noLieStrategy"
-	"github.com/twoodhouse/coup-sim/model/strategies/thiefStrategy"
-	"github.com/twoodhouse/coup-sim/model/strategies/consoleStrategy"
-	"github.com/twoodhouse/coup-sim/model/strategies/randomStrategy"
 	"github.com/twoodhouse/coup-sim/controller"
+	"strconv"
+	"github.com/twoodhouse/coup-sim/model/strategy"
 	"fmt"
 )
 
@@ -16,7 +13,7 @@ func main() {
 	fmt.Scanf("%d", &numPlayers)
 	fmt.Printf("Ah ... %d. Sounds good. What strategies will they be using?\n", numPlayers)
 
-	strategies := make([]strategy.Interface, numPlayers)
+	strategies := make([]*strategy.Interface, numPlayers)
 	playerNames := make([]string, numPlayers)
 
 	var strategyName string
@@ -28,7 +25,7 @@ func main() {
 				return
 		}
 		newStrategy := createStrategyByName(strategyName)
-		strategies[i] = newStrategy
+		strategies[i] = &newStrategy
 		if newStrategy != nil {
 			fmt.Printf("Found %q, what is its name?  ", newStrategy.GetStrategyName())
 			//TODO fix this so that it will error check for multiple players with same name
@@ -50,23 +47,13 @@ func main() {
 	fmt.Printf("How many times do you want to play?\n")
 	fmt.Scanf("%d", &numGames)
 
-	controller.StartGame(strategies, playerNames, numGames)
-}
-
-func createStrategyByName(name string) strategy.Interface {
-	switch name {
-	case "noLie":
-		noLieStrategy := noLieStrategy.New()
-		return noLieStrategy
-	case "thief":
-		thiefStrategy := thiefStrategy.New()
-		return thiefStrategy
-	case "console":
-		consoleStrategy := consoleStrategy.New()
-		return consoleStrategy
-	case "random":
-		randomStrategy := randomStrategy.New()
-		return randomStrategy
+	winMap := make(map[string]int, len(playerNames))
+	for i := 0; i<numGames; i++ {
+		winner, returnedStrategies := controller.StartGame(strategies, playerNames, numGames)
+		strategies = returnedStrategies
+		winMap[winner] = winMap[winner] + 1
 	}
-	return nil
+	for i := range playerNames {
+		fmt.Println(playerNames[i] + " - " + strconv.Itoa(winMap[playerNames[i]]) + " wins")
+	}
 }

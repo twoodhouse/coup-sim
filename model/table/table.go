@@ -13,7 +13,7 @@ type Entity struct {
   coins int
 }
 
-func New(strategies []strategy.Interface, playerNames []string) *Entity {
+func New(strategies []*strategy.Interface, playerNames []string) *Entity {
   centerDeck := deck.NewRandomCenter()
   faceupDecks := make([]*deck.Entity, len(strategies))
 

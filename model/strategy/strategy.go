@@ -14,9 +14,10 @@ type Interface interface {
 
   //return one of seven action names, {"income", "foreign aid", "tax", "steal", "assassinate", "exchange", "coup"}
   //if player has more than 10 coins, player must return "coup" or will be disqualified
+  //if player has less than the required coins for coup(7) or assassinate(3), he will be disqualified
   GetAction(*log.Entity, []string, map[string]int, map[string][]int, *deck.Entity) string
 
-  //return a valud player
+  //return a valid player name
   GetTarget(*log.Entity, []string, map[string]int, map[string][]int, *deck.Entity) string
 
   //return 0 or 1 to specify which of your cards will be lost, top or bottom (same if only one left)
@@ -31,6 +32,6 @@ type Interface interface {
   //return a 2 or a 5 (captain or ambassador respectively)
   GetStealBlockCardChoice(*log.Entity, []string, map[string]int, map[string][]int, *deck.Entity) int
 
-  //return two ints (1-5) which are the returned cards
+  //return two ints (1-5) which are the returned cards. Player disqualified if unable to return both cards
   GetExchangeReturnChoices(*log.Entity, []string, map[string]int, map[string][]int, *deck.Entity) (int,int)
 }
