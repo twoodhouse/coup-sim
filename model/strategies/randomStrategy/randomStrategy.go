@@ -26,7 +26,7 @@ func (entity *Entity) GetStrategyName() string {
 }
 
 func (entity *Entity) GetDuelFirstCardChoice() int {
-  return int(rand.Int31n(int32(5))) + 1
+  return rand.Intn(5) + 1
 }
 
 func (entity *Entity) SetPlayerName(name string) {
@@ -51,11 +51,11 @@ func (entity *Entity) GetAction(log *log.Entity, playerNames []string, coinInfo 
   if coinInfo[entity.playerName] >= 10 {
     return "coup"
   }
-  return viableActions[rand.Int31n(int32(len(viableActions)))]
+  return viableActions[rand.Intn(len(viableActions))]
 }
 
 func (entity *Entity) GetLossChoice(log *log.Entity, playerNames []string, coinInfo map[string]int, faceupInfo map[string][]int, deck *deck.Entity) int {
-  if rand.Int31n(int32(2)) == 1 {
+  if rand.Intn(2) == 1 {
     return 0
   }
   return 1
@@ -69,12 +69,12 @@ func (entity *Entity) GetTarget(log *log.Entity, playerNames []string, coinInfo 
       choices = append(choices, playerNames[i])
     }
   }
-  return choices[rand.Int31n(int32(len(choices)))]
+  return choices[rand.Intn(len(choices))]
 }
 
 func (entity *Entity) GetChallenge(log *log.Entity, playerNames []string, coinInfo map[string]int, faceupInfo map[string][]int, deck *deck.Entity) bool {
   rand.Seed(time.Now().UnixNano())
-  if rand.Int31n(int32(2)) == 1 {
+  if rand.Intn(2) == 1 {
     return true
   }
   return false
@@ -82,24 +82,24 @@ func (entity *Entity) GetChallenge(log *log.Entity, playerNames []string, coinIn
 
 func (entity *Entity) GetBlock(log *log.Entity, playerNames []string, coinInfo map[string]int, faceupInfo map[string][]int, deck *deck.Entity) bool {
   rand.Seed(time.Now().UnixNano())
-  if rand.Int31n(int32(2)) == 1 {
+  if rand.Intn(2) == 1 {
     return true
   }
   return false
 }
 
 func (entity *Entity) GetStealBlockCardChoice(log *log.Entity, playerNames []string, coinInfo map[string]int, faceupInfo map[string][]int, deck *deck.Entity) int {
-  if rand.Int31n(int32(2)) == 1 {
+  if rand.Intn(2) == 1 {
     return 2
   }
   return 5
 }
 
 func (entity *Entity) GetExchangeReturnChoices(log *log.Entity, playerNames []string, coinInfo map[string]int, faceupInfo map[string][]int, deck *deck.Entity) (int, int) {
-  choice1 := rand.Int31n(int32(deck.Size()))
-  var choice2 int32
+  choice1 := rand.Intn(deck.Size())
+  var choice2 int
   for choice2 == choice1 {
-    choice2 = rand.Int31n(int32(deck.Size()))
+    choice2 = rand.Intn(deck.Size())
   }
   return deck.Cards()[choice1], deck.Cards()[choice2]
 }

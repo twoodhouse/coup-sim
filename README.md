@@ -17,6 +17,8 @@ No errors? Yay! It worked! Any changes made to the strategy file will be reflect
 
 Make sure to run `go install` to compile your changes to the strategy code. Also consider writing some go tests if your strategy gets significantly complicated.
 
+** Players CANNOT have the same in-game name
+
 ## Strategy Rules
 - A strategy must be able to implement the Strategy interface. (Go will not compile if it does not)
 - A strategy may not import any twoodhouse packages aside from log and deck
