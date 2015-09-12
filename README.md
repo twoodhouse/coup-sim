@@ -28,3 +28,4 @@ Make sure to run `go install` to compile your changes to the strategy code. Also
 
 - Use the "console" strategy to play 1 on 1 with your strategy for functional testing. It is just a strategy which polls the command line for all its actions.
 - Check out the log.go file for how to parse JSON log files
+- Strategies are passed by value in the controller, so you should implement each decision as independent of all others it may have previously made. Use data from the log if you want to consider past actions.
