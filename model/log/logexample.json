@@ -1,35 +1,139 @@
 [
-  {
-    "playerName": "Trevor",
-    "action": {
-      "name": "income"
+    {
+        "action": {
+            "name": "foreign_aid"
+        },
+        "block": {
+            "blocker": "b"
+        },
+        "playerName": "a"
+    },
+    {
+        "action": {
+            "name": "tax"
+        },
+        "challenge": {
+            "cardLoss": 3,
+            "challenger": "c",
+            "success": true
+        },
+        "playerName": "b"
+    },
+    {
+        "action": {
+            "name": "steal",
+            "target": "e"
+        },
+        "block": {
+            "cardClaim": 2
+        },
+        "playerName": "c"
+    },
+    {
+        "action": {
+            "name": "exchange"
+        },
+        "challenge": {
+            "cardLoss": 1,
+            "challenger": "a",
+            "success": true
+        },
+        "playerName": "d"
+    },
+    {
+        "action": {
+            "name": "tax"
+        },
+        "challenge": {
+            "cardLoss": 4,
+            "challenger": "b",
+            "success": false
+        },
+        "playerName": "e"
+    },
+    {
+        "action": {
+            "name": "foreign_aid"
+        },
+        "playerName": "a"
+    },
+    {
+        "action": {
+            "name": "steal",
+            "target": "a"
+        },
+        "challenge": {
+            "cardLoss": 5,
+            "challenger": "a",
+            "success": true
+        },
+        "playerName": "c"
+    },
+    {
+        "action": {
+            "name": "steal",
+            "target": "a"
+        },
+        "challenge": {
+            "cardLoss": 4,
+            "challenger": "a",
+            "success": false
+        },
+        "playerName": "d"
+    },
+    {
+        "action": {
+            "name": "income"
+        },
+        "playerName": "e"
+    },
+    {
+        "action": {
+            "name": "exchange"
+        },
+        "challenge": {
+            "cardLoss": 1,
+            "challenger": "c",
+            "success": true
+        },
+        "playerName": "a"
+    },
+    {
+        "action": {
+            "name": "tax"
+        },
+        "playerName": "c"
+    },
+    {
+        "action": {
+            "name": "steal",
+            "target": "e"
+        },
+        "challenge": {
+            "cardLoss": 3,
+            "challenger": "c",
+            "success": true
+        },
+        "playerName": "d"
+    },
+    {
+        "action": {
+            "name": "income"
+        },
+        "playerName": "e"
+    },
+    {
+        "action": {
+            "name": "foreign_aid"
+        },
+        "playerName": "c"
+    },
+    {
+        "action": {
+            "name": "coup",
+            "target": "c"
+        },
+        "cardKilled": 5,
+        "playerName": "e"
     }
-  },
-  {
-    "playerName": "Michael",
-    "action": {
-      "name": "tax",
-      "challenge": {
-        "challenger": "Trevor",
-        "success": true
-      }
-    }
-  },
-  {
-    "playerName": "Zueterneuman",
-    "action": {
-      "name": "steal",
-      "target": "Trevor"
-    }
-  },
-  {
-    "playerName": "Trevor",
-    "action": {
-      "name": "assassinate",
-      "target": "Michael",
-      "block": {
-        "challengeSuccess": true
-      }
-    }
-  }
 ]
